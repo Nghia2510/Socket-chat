@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket-chat</title>
+   
+</head>
+<body>
+    <style>
+        body{
+        background: linear-gradient(-45deg, #ee7752, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        height: 100vh;
+    }
+        @keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+        
+        h1{
+            background: #176094;    
+            padding: 10px;
+            margin: 5px;
+            border-radius: 10px;
+            color: aliceblue;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        @import url(https://fonts.googleapis.com/css?family=Raleway:400);
+        #send-chat {
+        font-family: 'Raleway', Arial, sans-serif;
+        border: none;
+        background-color: #5666a5;
+        border-radius: 5px;
+        color: #ffffff;
+        cursor: pointer;
+        padding: 0px 30px;
+        display: inline-block;
+        margin: 15px 30px;
+        text-transform: uppercase;
+        line-height: 46px;
+        font-weight: 400;
+        font-size: 1em;
+        outline: none;
+        position: relative;
+        overflow: hidden;
+        font-size: 16px;
+        border-radius: 23px;
+        letter-spacing: 2px;
+        -webkit-transform: translateZ(0);
+        -webkit-transition: all 0.35s ease;
+        transition: all 0.35s ease;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        }
+        #send-chat:before {
+        opacity: 0;
+        content: "";
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        border-radius: inherit;
+        background-color: #ffffff;
+        -webkit-transition: all 0.3s;
+        transition: all 0.3s;
+        -webkit-transform: translateY(100%);
+        transform: translateY(100%);
+        }
+        #send-chat:after {
+        position: absolute;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        border: 5px solid #5666a5;
+        content: '';
+        border-radius: inherit;
+        }
+        #send-chat:hover,
+        #send-chat.hover {
+        background-color: #5666a5;
+        color: #ffffff;
+        }
+        #send-chat:hover:before,
+        #send-chat.hover:before {
+        -webkit-transform: translateY(0%);
+        transform: translateY(0%);
+        opacity: 0.25;
+        }
+        #chat-form {
+            background-color: azure;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        #messages {
+            border: 2px solid #dedede;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px 0;
+            list-style: none;
+        }   
+
+        #chat-mess {
+            margin-left: 20px;
+            height: 30px;
+        }
+    </style>
+    <h1 >Chat Messages</h1>     
+        <ul id="messages">
+           
+    
+        </ul>
+    
+        <form id="chat-form">
+            <input type="text" id="chat-mess">
+            <button id="send-chat">Send</button>
+        </form>      
+    
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    const name = prompt('Your name')
+    const chatForm = document.querySelector('#chat-form');
+    const chatMess = document.querySelector('#chat-mess');
+
+    chatForm.addEventListener('submit', (e) =>{
+        e.preventDefault();
+
+        const message = chatMess.value
+        socket.emit('on-chat', {
+            name,
+            message
+        });
+        chatMess.value =''
+    })
+    const messages = document.querySelector('#messages');
+        socket.on('user-chat', (message) =>{
+            const chatItem = document.createElement('li');
+            chatItem.textContent = `${message.name}: ${message.message}`;
+
+            messages.appendChild(chatItem);
+        })
+</script>
+</html>
